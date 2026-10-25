@@ -166,6 +166,7 @@
 										</div>
 										<div class="col-6 col-12-medium">
 											<h3>Echo Scale</h3>
+											<p id="echo-current" style="font-size:1.2em;"><strong>Current level:</strong> <a href="echo.html"><span id="echo-current-text">see live status</span></a></p>
 											<ul>
 												<li><strong>Echo 5</strong> – Normal / Routine</li>
 												<li><strong>Echo 4</strong> – Elevated Alert</li>
@@ -256,5 +257,13 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
+			<script>
+			fetch("echo.json?t=" + Date.now(), { cache: "no-store" })
+				.then(function (r) { return r.json(); })
+				.then(function (e) {
+					document.getElementById("echo-current-text").textContent = "Echo " + e.level + " \u2013 " + e.name;
+				})
+				.catch(function () {});
+		</script>
 	</body>
 </html>

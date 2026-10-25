@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>CGARES Echo Level</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #fff;
+    font-family: Arial, Helvetica, sans-serif; }
+  #badge { height: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    box-sizing: border-box; padding: 4vmin; }
+  #lvl { font-size: 22vmin; font-weight: bold; line-height: 1; }
+  #name { font-size: 7vmin; margin-top: 2vmin; }
+  #sum { font-size: 4vmin; margin-top: 3vmin; opacity: .85; max-width: 90%; }
+  #upd { font-size: 3vmin; margin-top: 3vmin; opacity: .6; }
+  .e5 { background: #1b5e20; } .e4 { background: #f9a825; color: #000; }
+  .e3 { background: #ef6c00; } .e2 { background: #c62828; }
+  .e1 { background: #6a1b9a; } .e0 { background: #1565c0; }
+  .stale { background: #424242; }
+</style>
+</head>
+<body>
+<div id="badge" class="stale">
+  <div id="lvl">Echo ?</div>
+  <div id="name">Loading…</div>
+  <div id="sum"></div>
+  <div id="upd"></div>
+</div>
+<script>
+  function fmt(d) {
+    return d.toLocaleString("en-US", { timeZone: "America/Chicago",
+      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+      hour12: false }) + " CT";
+  }
+  function load() {
+    fetch("echo.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (e) {
+        var b = document.getElementById("badge");
+        b.className = "e" + e.level;
+        document.getElementById("lvl").textContent = "Echo " + e.level;
+        document.getElementById("name").textContent = e.name;
+        document.getElementById("sum").textContent = e.summary || "";
+        document.getElementById("upd").textContent =
+          e.updated ? "Updated " + fmt(new Date(e.updated)) : "";
+      })
+      .catch(function () {
+        document.getElementById("badge").className = "stale";
+        document.getElementById("name").textContent = "Status unavailable";
+      });
+  }
+  load();
+  setInterval(load, 300000);
+</script>
+</body>
+</html>
