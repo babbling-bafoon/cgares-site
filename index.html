@@ -36,6 +36,36 @@
 									</ul>
 								</header>
 
+							<!-- Live Echo badge (top of homepage) -->
+								<style>
+									#echo-top { margin: 0 0 1.5em 0; }
+									#echo-top-badge {
+										display: inline-block;
+										padding: 0.4em 1.1em;
+										border-radius: 999px;
+										font-weight: 700;
+										font-size: 0.95em;
+										letter-spacing: 0.02em;
+										text-decoration: none;
+										color: #fff;
+										background: #424242;
+										border: 0;
+										box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+										transition: opacity 0.15s ease;
+									}
+									#echo-top-badge:hover { opacity: 0.92; text-decoration: none; }
+									#echo-top-badge.e5 { background: #1b5e20; color: #fff; }
+									#echo-top-badge.e4 { background: #f9a825; color: #000; }
+									#echo-top-badge.e3 { background: #ef6c00; color: #fff; }
+									#echo-top-badge.e2 { background: #c62828; color: #fff; }
+									#echo-top-badge.e1 { background: #6a1b9a; color: #fff; }
+									#echo-top-badge.e0 { background: #1565c0; color: #fff; }
+									#echo-top-badge.stale { background: #424242; color: #fff; }
+								</style>
+								<p id="echo-top">
+									<a id="echo-top-badge" class="stale" href="echo.html">Echo status loading…</a>
+								</p>
+
 							<!-- Banner -->
 								<section id="banner">
 									<div class="content">
@@ -258,12 +288,29 @@
 			<script src="assets/js/main.js"></script>
 
 			<script>
-			fetch("echo.json?t=" + Date.now(), { cache: "no-store" })
-				.then(function (r) { return r.json(); })
-				.then(function (e) {
-					document.getElementById("echo-current-text").textContent = "Echo " + e.level + " \u2013 " + e.name;
-				})
-				.catch(function () {});
+			(function () {
+				function applyEcho(e) {
+					var label = "Echo " + e.level + " \u2013 " + e.name;
+					var lower = document.getElementById("echo-current-text");
+					if (lower) lower.textContent = label;
+					var badge = document.getElementById("echo-top-badge");
+					if (badge) {
+						badge.textContent = label;
+						badge.className = "e" + e.level;
+					}
+				}
+				function markUnavailable() {
+					var badge = document.getElementById("echo-top-badge");
+					if (badge) {
+						badge.textContent = "Echo status unavailable";
+						badge.className = "stale";
+					}
+				}
+				fetch("echo.json?t=" + Date.now(), { cache: "no-store" })
+					.then(function (r) { return r.json(); })
+					.then(applyEcho)
+					.catch(markUnavailable);
+			})();
 		</script>
 	</body>
 </html>
