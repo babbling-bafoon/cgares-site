@@ -1,7 +1,7 @@
 {
-  "level": 5,
-  "name": "Normal Operations",
-  "summary": "No watches, warnings, or significant hazards for Cerro Gordo County.",
-  "updated": "2026-10-25T11:49:38-05:00",
+  "level": 4,
+  "name": "Elevated Alert",
+  "summary": "TEST ONLY — temporary Echo 4 for ~5 minutes; no real hazard. Will revert to Echo 5 automatically.",
+  "updated": "2026-10-25T19:22:00-05:00",
   "updated_by": "CGARES Duty Officer"
 }
