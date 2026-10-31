@@ -19,6 +19,12 @@
   .e3 { background: #ef6c00; } .e2 { background: #c62828; }
   .e1 { background: #6a1b9a; } .e0 { background: #1565c0; }
   .stale { background: #424242; }
+  /* Holiday looks (Echo 5 only): border + emoji; level text/color unchanged */
+  .hol-halloween { box-shadow: inset 0 0 0 2vmin #ff7518, inset 0 0 0 4vmin #000; }
+  .hol-thanksgiving { box-shadow: inset 0 0 0 2vmin #d2691e, inset 0 0 0 4vmin #5d3a1a; }
+  .hol-christmas { box-shadow: inset 0 0 0 2vmin #c62828, inset 0 0 0 4vmin #c0c0c0; }
+  .hol-newyear { box-shadow: inset 0 0 0 2vmin #d4af37, inset 0 0 0 4vmin #c0c0c0; }
+  .hol-emoji { font-size: .6em; margin-left: .2em; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -34,6 +40,43 @@
       month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
       hour12: false }) + " CT";
   }
+  // Holiday looks: shown only at Echo 5. Dates use the America/Chicago clock.
+  var HOL_EMOJI = { halloween: "\uD83C\uDF83", thanksgiving: "\uD83E\uDD83",
+    christmas: "\uD83C\uDF84", newyear: "\uD83C\uDF86" };
+  function holidayFor(now) {
+    var p = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago",
+      year: "numeric", month: "numeric", day: "numeric" })
+      .formatToParts(now).forEach(function (x) { p[x.type] = +x.value; });
+    var y = p.year, m = p.month, d = p.day;
+    if (m === 10 && d === 31) return "halloween";
+    if (m === 12 && d >= 24) return "christmas";
+    if (m === 1 && d === 1) return "newyear";
+    // Thanksgiving: Wed before 4th Thu of Nov through the following Mon
+    var dow = new Date(Date.UTC(y, 10, 1)).getUTCDay();
+    var thu4 = 1 + (4 - dow + 7) % 7 + 21;   // Nov day of 4th Thursday
+    var doy = m === 11 ? d : (m === 12 ? 30 + d : 0);
+    if (doy >= thu4 - 1 && doy <= thu4 + 4) return "thanksgiving";
+    return "";
+  }
+  function pickTheme() {
+    var q = new URLSearchParams(location.search).get("theme");
+    if (q === "none") return "";
+    if (q && HOL_EMOJI[q]) return q;
+    return holidayFor(new Date());
+  }
+  function decorate(b, level) {
+    var lvl = document.getElementById("lvl");
+    var t = String(level) === "5" ? pickTheme() : "";
+    if (t) {
+      b.className += " hol-" + t;
+      var s = document.createElement("span");
+      s.className = "hol-emoji";
+      s.setAttribute("aria-hidden", "true");
+      s.textContent = HOL_EMOJI[t];
+      lvl.appendChild(s);
+    }
+  }
   function load() {
     fetch("echo.json?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) { return r.json(); })
@@ -41,6 +84,7 @@
         var b = document.getElementById("badge");
         b.className = "e" + e.level;
         document.getElementById("lvl").textContent = "Echo " + e.level;
+        decorate(b, e.level);
         document.getElementById("name").textContent = e.name;
         document.getElementById("sum").textContent = e.summary || "";
         document.getElementById("upd").textContent =
@@ -48,6 +92,8 @@
       })
       .catch(function () {
         document.getElementById("badge").className = "stale";
+        var em = document.querySelector(".hol-emoji");
+        if (em) em.parentNode.removeChild(em);
         document.getElementById("name").textContent = "Status unavailable";
       });
   }
