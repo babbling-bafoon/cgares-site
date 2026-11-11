@@ -17,6 +17,7 @@
 		<meta property="og:url" content="https://cgares.com/" />
 		<meta property="og:type" content="website" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="alternate" type="application/rss+xml" title="CGARES Briefings" href="https://dashboard.cgares.com/feed.xml" />
 	</head>
 	<body class="is-preload">
 
@@ -65,6 +66,10 @@
 								<p id="echo-top">
 									<a id="echo-top-badge" class="stale" href="echo.html">Echo status loading…</a>
 								</p>
+								<style>
+									#latest-briefing { margin: -0.5em 0 1.5em 0; font-size: 0.95em; }
+								</style>
+								<p id="latest-briefing">Latest briefing loading…</p>
 
 							<!-- Banner -->
 								<section id="banner">
@@ -246,6 +251,7 @@
 									<ul>
 										<li><a href="index.html">Home</a></li>
 										<li><a href="about.html">About</a></li>
+										<li><a href="briefings.html">Briefings</a></li>
 										<li><a href="join.html">How to Join</a></li>
 										<li><a href="nets.html">Nets &amp; Training</a></li>
 										<li><a href="activation.html">Activation</a></li>
@@ -312,6 +318,7 @@
 					.catch(markUnavailable);
 			})();
 		</script>
+			<script src="assets/js/briefings.js"></script>
 	<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "94263d33e6374f4d972027d3293cdb75"}'></script><!-- End Cloudflare Web Analytics -->
 	</body>
 </html>
