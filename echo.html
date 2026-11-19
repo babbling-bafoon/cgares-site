@@ -15,6 +15,7 @@
   #name { font-size: 7vmin; margin-top: 2vmin; }
   #sum { font-size: 4vmin; margin-top: 3vmin; opacity: .85; max-width: 90%; }
   #upd { font-size: 3vmin; margin-top: 3vmin; opacity: .6; }
+  #chk { font-size: 3vmin; margin-top: 1vmin; opacity: .6; }
   .e5 { background: #1b5e20; } .e4 { background: #f9a825; color: #000; }
   .e3 { background: #ef6c00; } .e2 { background: #c62828; }
   .e1 { background: #6a1b9a; } .e0 { background: #1565c0; }
@@ -33,6 +34,7 @@
   <div id="name">Loading…</div>
   <div id="sum"></div>
   <div id="upd"></div>
+  <div id="chk"></div>
 </div>
 <script>
   function fmt(d) {
@@ -88,7 +90,10 @@
         document.getElementById("name").textContent = e.name;
         document.getElementById("sum").textContent = e.summary || "";
         document.getElementById("upd").textContent =
-          e.updated ? "Updated " + fmt(new Date(e.updated)) : "";
+          e.updated ? "Level set " + fmt(new Date(e.updated)) : "";
+        // last_checked: refreshed by Duty Officer each brief; level unchanged
+        document.getElementById("chk").textContent =
+          e.last_checked ? "Last checked " + fmt(new Date(e.last_checked)) : "";
       })
       .catch(function () {
         document.getElementById("badge").className = "stale";
